@@ -24,18 +24,16 @@ jobs:
       with:
         php-version: '8.0'
     - uses: actions/checkout@v3
+    - name: install devspace
+      run: curl -L -o devspace "https://github.com/loft-sh/devspace/releases/latest/download/devspace-linux-amd64" && sudo install -c -m 0755 devspace /usr/local/bin
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
-      run: php artisan key:generate
+      run: devspace run generate-key
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
-    - name: key generate
-      run: |
-        php artisan key:generate
-        php artisan config:cache
     - name: Create Database
       run: |
         mkdir -p database
